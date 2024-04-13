@@ -6,7 +6,7 @@
 template<typename T, int size>
 class TStack {
 private:
-  T data[300];
+  T data[100];
   int top;
 public:
   TStack() : top(0) {}
