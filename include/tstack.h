@@ -8,6 +8,7 @@ class TStack {
  private:
   T data[300];
   int top;
+  
  public:
   TStack() : top(0) {}
   void push(const T &item) {
