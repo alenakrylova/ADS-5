@@ -108,7 +108,6 @@ int eval(std::string pref) {
       temp = "";
       continue;
     }
-
     if (!isNum(pref[i])) {
       int num1 = stek.pop();
       int num2 = stek.pop();
