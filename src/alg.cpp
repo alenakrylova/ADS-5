@@ -76,7 +76,7 @@ int eval(std::string pref) {
         continue;
       } else {
         Res += pref[i];
-        Stack1.push(atoi(rez.c_str()));
+        Stack1.push(atoi(Res.c_str()));
         Res = "";
       }
     } else {
