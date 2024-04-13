@@ -1,7 +1,6 @@
 // Copyright 2021 NNTU-CS
 #include <string>
 #include "tstack.h"
-
 #include "vector"
 
 bool isNum(char c) {
@@ -16,6 +15,7 @@ int getPriority(char operation) {
     case '-': return 2;
     case '*': return 3;
     case '/': return 3;
+
     default: return -1;
   }
 }
