@@ -1,13 +1,14 @@
 // Copyright 2021 NNTU-CS
 #ifndef INCLUDE_TSTACK_H_
 #define INCLUDE_TSTACK_H_
+#include "string"
 
 template<typename T, int size>
 class TStack {
- private:
-  T data[300];
+private:
+  T data[100];
   int top;
- public:
+public:
   TStack() : top(0) {}
   void push(const T &item) {
     if (top <= size - 1) {
