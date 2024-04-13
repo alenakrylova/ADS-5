@@ -53,7 +53,6 @@ std::string infx2pstfx(std::string inf) {
     Res1 += Res[i];
   return Res1;
 }
-
 int doMath(const int& p, const int& v, const int& x) {
   switch (x) {
     case '+': return p + v;
