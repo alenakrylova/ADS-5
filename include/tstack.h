@@ -15,9 +15,10 @@ class TStack {
     if (top <= size - 1) {
       data[top++] = item;
     } else {
-      throw std::string("Stack is full");
+      throw std::string("Stack overflow");
     }
   }
+
   T pop() {
     if (top > 0) {
       return data[--top];
@@ -25,6 +26,7 @@ class TStack {
       throw std::string("Stack is empty");
     }
   }
+
   T get() const {
     if (top > 0) {
       return data[top - 1];
