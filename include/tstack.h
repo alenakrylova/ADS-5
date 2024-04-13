@@ -11,7 +11,6 @@ class TStack {
 
  public:
   TStack() : top(0) {}
-
   void push(const T &item) {
     if (top <= size - 1) {
       data[top++] = item;
