@@ -1,7 +1,11 @@
 // Copyright 2021 NNTU-CS
 #include <string>
-#include <map>
 #include "tstack.h"
+#include "vector"
+
+bool isNum(char c) {
+  return (c >= '0' && c <= '9');
+}
 
 int getPriority(char operation) {
   switch (operation) {
@@ -11,82 +15,106 @@ int getPriority(char operation) {
     case '-': return 2;
     case '*': return 3;
     case '/': return 3;
+
     default: return -1;
   }
 }
 
-std::string infx2pstfx(std::string inf) {
-  std::string Res, Res1;
-  TStack<char, 100>Stack1;
-  for (auto& x : inf) {
-    int p = getPriority(x);
-    if (p == -1) {
-      Res = Res + x + ' ';
-    } else {
-      char element = Stack1.get();
-      if (p == 0 || getPriority(element) < p || Stack1.isEmpty()) {
-        Stack1.push(x);
-      } else {
-        if (x == ')') {
-          while (getPriority(element) >= p) {
-            Res = Res + element + ' ';
-            Stack1.pop();
-            element = Stack1.get();
-          }
-          Stack1.pop();
-        } else {
-          while (getPriority(element) >= p) {
-            Res = Res + element + ' ';
-            Stack1.pop();
-            element = Stack1.get();
-          }
-          Stack1.push(x);
-        }
+std::vector<std::string> toTokenArray(std::string s) {
+  std::vector<std::string> result;
+  std::string buf = "";
+  for (int i = 0; i < s.length(); i++) {
+    if (!isNum(s[i])) {
+      if (!buf.empty()) {
+        result.push_back(buf);
       }
+      std::string temp = "";
+      result.push_back(temp + s[i]);
+      buf = "";
+    } else {
+      buf += s[i];
     }
   }
-  while (!Stack1.isEmpty()) {
-    Res = Res + Stack1.get() + ' ';
-    Stack1.pop();
+  result.push_back(buf);
+
+  return result;
+}
+std::string infx2pstfx(std::string inf) {
+  std::vector<std::string> arr = toTokenArray(inf);
+  TStack<std::string, 300> stek;
+  std::string result;
+  for (auto i : arr) {
+    if (isNum(i[0])) {
+      result += i;
+      result += ' ';
+      continue;
+    }
+    if (i[0] == ')') {
+      while (stek.get() != "(") {
+        result += stek.pop();
+        result += ' ';
+      }
+      stek.pop();
+      continue;
+    }
+    if (!isNum(i[0])) {
+      if (stek.isEmpty()
+          || i[0] == '('
+          || (getPriority(i[0]) > getPriority(stek.get()[0]))) {
+        stek.push(i);
+      } else {
+        while (!stek.isEmpty() &&
+        getPriority(i[0]) <= getPriority(stek.get()[0])) {
+          result += stek.pop();
+          result += ' ';
+        }
+        stek.push(i);
+      }
+      continue;
+    }
   }
-  for (int i = 0; i < Res.size() - 1; i++)
-    Res1 += Res[i];
-  return Res1;
+  while (!stek.isEmpty()) {
+    result += stek.pop();
+    result += ' ';
+  }
+  while (result[result.length() - 1] == ' ') {
+    result.pop_back();
+  }
+  return result;
 }
 
-int doMath(const int& p, const int& v, const int& x) {
-  switch (x) {
-    case '+': return p + v;
-    case '-': return p - v;
-    case '/': return p / v;
-    case '*': return p * v;
-    default: return 0;
+int doMath(int num1, int num2, char operation) {
+  switch (operation) {
+    case '+': return num1 + num2;
+    case '-': return num1 - num2;
+    case '*': return num1 * num2;
+    default: return num1 / num2;
   }
 }
 
 int eval(std::string pref) {
-  TStack<int, 100> Stack1;
-  std::string Res = "";
-  for (int i = 0; i < pref.size(); i++) {
-    char element = pref[i];
-    if (getPriority(element) == -1) {
-      if (pref[i] == ' ') {
+  std::string temp;
+  TStack<int, 300> stek;
+  for (int i = 0; i < pref.length(); i++) {
+    if (isNum(pref[i])) {
+      temp += pref[i];
+      continue;
+    }
+    if (pref[i] == ' ') {
+      if (temp.empty()) {
         continue;
-      } else if (isdigit(pref[i+1])) {
-        Res += pref[i];
-        continue;
-      } else {
-        Res += pref[i];
-        Stack1.push(atoi(Res.c_str()));
-        Res = "";
       }
-    } else {
-      int v = Stack1.get();
-      Stack1.pop();
-      int p = Stack1.get();
-      Stack1.pop();
-      Stack1.push(doMath(p, v, element));
+      stek.push(std::stoi(temp));
+      temp = "";
+      continue;
+    }
+
+    if (!isNum(pref[i])) {
+      int num1 = stek.pop();
+      int num2 = stek.pop();
+      int result = doMath(num2, num1, pref[i]);
+      stek.push(result);
     }
   }
-  return Stack1.get();
+  return stek.get();
 }
